@@ -38,7 +38,8 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: AAR
-          path: app/libs/libcore.aarname: Release Build
+          path: app/libs/libcore.aar
+          name: Release Build
 on:
   workflow_dispatch:
     inputs:
