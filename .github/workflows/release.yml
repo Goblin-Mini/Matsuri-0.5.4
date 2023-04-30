@@ -5,6 +5,15 @@ on:
       tag:
         description: 'Release Tag'
         required: true
+      upload:
+        description: 'Upload: If want ignore'
+        required: false
+      publish:
+        description: 'Publish: If want ignore'
+        required: false
+      play:
+        description: 'Play: If want ignore'
+        required: false
 jobs:
   libcore:
     name: Native Build (LibCore)
@@ -33,7 +42,8 @@ jobs:
       - name: Native Build
         if: steps.cache.outputs.cache-hit != 'true'
         run: ./run init action go && ./run lib core
+  
       - uses: actions/upload-artifact@v3
         with:
-          name: AAR
+          name: AAB
           path: app/libs/libcore.aar
