@@ -41,4 +41,47 @@ jobs:
           key: go-${{ hashFiles('.github/workflows/*', 'golang_status') }}
       - name: Native Build
         if: steps.cache.outputs.cache-hit != 'true'
+        run: ./run init action go && ./run lib corename: Release Build
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release Tag'
+        required: false
+      upload:
+        description: 'Upload: If want ignore'
+        required: false
+      publish:
+        description: 'Publish: If want ignore'
+        required: false
+      play:
+        description: 'Play: If want ignore'
+        required: false
+jobs:
+  libcore:
+    name: Native Build (LibCore)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Golang Status
+        run: find buildScript libcore/*.sh | xargs cat | sha1sum > golang_status
+      - name: Libcore Status
+        run: git ls-files libcore | xargs cat | sha1sum > libcore_status
+      - name: LibCore Cache
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            app/libs/libcore.aar
+            build/v2ray-core
+          key: ${{ hashFiles('.github/workflows/*', 'golang_status', 'libcore_status') }}
+      - name: Golang Cache
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: actions/cache@v3
+        with:
+          path: build/golang
+          key: go-${{ hashFiles('.github/workflows/*', 'golang_status') }}
+      - name: Native Build
+        if: steps.cache.outputs.cache-hit != 'true'
         run: ./run init action go && ./run lib core
